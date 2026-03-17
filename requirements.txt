@@ -1,0 +1,17 @@
+# Core dependencies
+pygame>=2.5.0
+
+# For better performance (optional)
+numpy>=1.24.0  # Useful for board operations
+
+# For AI enhancements (optional)
+scipy>=1.10.0  # For advanced calculations
+
+# For saving/loading games (optional)
+pickle-mixin>=1.0.2
+
+# For better random number generation (optional)
+python-random>=3.12
+
+# Note: Most of these are optional. 
+# The game runs with just pygame installed.
