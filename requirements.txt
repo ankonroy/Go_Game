@@ -11,7 +11,7 @@ scipy>=1.10.0  # For advanced calculations
 pickle-mixin>=1.0.2
 
 # For better random number generation (optional)
-python-random>=3.12
+# python-random>=3.12  <-- COMMENTED OUT - this package doesn't exist
 
-# Note: Most of these are optional. 
+# Note: Most of these are optional.
 # The game runs with just pygame installed.
