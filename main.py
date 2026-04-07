@@ -92,7 +92,8 @@ class GoGame:
         
         # Game settings
         self.mode = GameMode.HUMAN_VS_HUMAN
-        self.ai_algorithm = AIAlgorithm.MINIMAX
+        self.ai_algorithm_black = AIAlgorithm.MINIMAX
+        self.ai_algorithm_white = AIAlgorithm.MINIMAX
         self.ai_personality_black = AIPersonality.ALBI
         self.ai_personality_white = AIPersonality.ANKON
         self.ai_depth = 2  # Reduced depth for safety
@@ -147,6 +148,7 @@ class GoGame:
         """Create buttons for settings panel."""
         panel_x = self.PADDING + (self.BOARD_SIZE - 1) * self.CELL_SIZE + 30
         button_width = 200
+        small_button_width = 100
         button_height = 30
         y_start = 250
         
@@ -166,48 +168,52 @@ class GoGame:
             btn.mode = mode
             self.mode_buttons.append(btn)
         
-        # Algorithm selection for AI
-        y_start += 120
-        self.algorithm_buttons = []
-        
         algos = [
             ("Minimax", AIAlgorithm.MINIMAX),
             ("Monte Carlo", AIAlgorithm.MONTECARLO)
         ]
-        
-        for i, (text, algo) in enumerate(algos):
-            btn = Button(panel_x + i * 105, y_start + 30, 100, button_height,
-                        text, color=(80, 80, 80), hover_color=(100, 100, 100))
-            btn.algorithm = algo
-            self.algorithm_buttons.append(btn)
-        
-        # AI Personality for Black
-        y_start += 80
-        self.black_personality_buttons = []
-        
+
         personalities = [
             ("Albi", AIPersonality.ALBI),
             ("Ankon", AIPersonality.ANKON)
         ]
+
+        # Black AI controls
+        y_start += 120
+        self.black_algorithm_buttons = []
+        for i, (text, algo) in enumerate(algos):
+            btn = Button(panel_x + i * 105, y_start + 30, small_button_width, button_height,
+                        text, color=(80, 80, 80), hover_color=(100, 100, 100))
+            btn.algorithm = algo
+            self.black_algorithm_buttons.append(btn)
         
+        y_start += 70
+        self.black_personality_buttons = []
         for i, (text, pers) in enumerate(personalities):
-            btn = Button(panel_x + i * 105, y_start + 30, 100, button_height,
+            btn = Button(panel_x + i * 105, y_start + 30, small_button_width, button_height,
                         text, color=(80, 80, 80), hover_color=(100, 100, 100))
             btn.personality = pers
             self.black_personality_buttons.append(btn)
         
-        # AI Personality for White
-        y_start += 80
+        # White AI controls
+        y_start += 95
+        self.white_algorithm_buttons = []
+        for i, (text, algo) in enumerate(algos):
+            btn = Button(panel_x + i * 105, y_start + 30, small_button_width, button_height,
+                        text, color=(80, 80, 80), hover_color=(100, 100, 100))
+            btn.algorithm = algo
+            self.white_algorithm_buttons.append(btn)
+
+        y_start += 70
         self.white_personality_buttons = []
-        
         for i, (text, pers) in enumerate(personalities):
-            btn = Button(panel_x + i * 105, y_start + 30, 100, button_height,
+            btn = Button(panel_x + i * 105, y_start + 30, small_button_width, button_height,
                         text, color=(80, 80, 80), hover_color=(100, 100, 100))
             btn.personality = pers
             self.white_personality_buttons.append(btn)
         
         # Apply settings button
-        y_start += 80
+        y_start += 95
         self.apply_button = Button(panel_x, y_start, button_width, button_height,
                                   "Apply Settings", color=(50, 150, 50), 
                                   hover_color=(70, 170, 70))
@@ -229,11 +235,13 @@ class GoGame:
     
     def _create_ai(self, player: Stone):
         """Create AI for specified player."""
+        algorithm = (self.ai_algorithm_black if player == Stone.BLACK
+                     else self.ai_algorithm_white)
         personality = (self.ai_personality_black if player == Stone.BLACK 
                       else self.ai_personality_white)
         
         try:
-            if self.ai_algorithm == AIAlgorithm.MINIMAX:
+            if algorithm == AIAlgorithm.MINIMAX:
                 if personality == AIPersonality.ALBI:
                     ai_class = AlbiMinimax
                 else:
@@ -408,19 +416,29 @@ class GoGame:
             panel_x = self.PADDING + (self.BOARD_SIZE - 1) * self.CELL_SIZE + 30
             
             pygame.draw.rect(self.screen, (220, 220, 220), 
-                            (panel_x - 10, 240, 260, 400))
+                            (panel_x - 10, 240, 260, 510))
             pygame.draw.rect(self.screen, self.line_color, 
-                            (panel_x - 10, 240, 260, 400), 2)
+                            (panel_x - 10, 240, 260, 510), 2)
             
             titles = [
                 ("Game Mode", 245),
-                ("AI Algorithm", 365),
-                ("Black AI", 445),
-                ("White AI", 525)
+                ("Black AI", 365),
+                ("White AI", 530)
             ]
             
             for title, y_pos in titles:
                 text = self.small_font.render(title, True, self.line_color)
+                self.screen.blit(text, (panel_x, y_pos))
+
+            labels = [
+                ("Algorithm", 395),
+                ("Author", 465),
+                ("Algorithm", 560),
+                ("Author", 630)
+            ]
+
+            for label, y_pos in labels:
+                text = self.small_font.render(label, True, self.line_color)
                 self.screen.blit(text, (panel_x, y_pos))
             
             # Draw mode buttons
@@ -433,9 +451,9 @@ class GoGame:
                     btn.hover_color = (100, 100, 100)
                 btn.draw(self.screen, self.small_font)
             
-            # Draw algorithm buttons
-            for btn in self.algorithm_buttons:
-                if btn.algorithm == self.ai_algorithm:
+            # Draw Black AI algorithm buttons
+            for btn in self.black_algorithm_buttons:
+                if btn.algorithm == self.ai_algorithm_black:
                     btn.color = (50, 150, 50)
                     btn.hover_color = (70, 170, 70)
                 else:
@@ -443,7 +461,7 @@ class GoGame:
                     btn.hover_color = (100, 100, 100)
                 btn.draw(self.screen, self.small_font)
             
-            # Draw Black AI personality buttons
+            # Draw Black AI author buttons
             for btn in self.black_personality_buttons:
                 if btn.personality == self.ai_personality_black:
                     btn.color = (50, 150, 50)
@@ -453,7 +471,17 @@ class GoGame:
                     btn.hover_color = (100, 100, 100)
                 btn.draw(self.screen, self.small_font)
             
-            # Draw White AI personality buttons
+            # Draw White AI algorithm buttons
+            for btn in self.white_algorithm_buttons:
+                if btn.algorithm == self.ai_algorithm_white:
+                    btn.color = (50, 150, 50)
+                    btn.hover_color = (70, 170, 70)
+                else:
+                    btn.color = (80, 80, 80)
+                    btn.hover_color = (100, 100, 100)
+                btn.draw(self.screen, self.small_font)
+
+            # Draw White AI author buttons
             for btn in self.white_personality_buttons:
                 if btn.personality == self.ai_personality_white:
                     btn.color = (50, 150, 50)
@@ -498,7 +526,7 @@ class GoGame:
             text = self.small_font.render(win_text, True, (150, 50, 50))
             self.screen.blit(text, (panel_x, 165))
             
-            instr_y = 650
+            instr_y = 770
             instr_lines = [
                 "Controls:",
                 "Click - Place stone",
@@ -615,9 +643,14 @@ class GoGame:
                     self.mode = btn.mode
                     return True
             
-            for btn in self.algorithm_buttons:
+            for btn in self.black_algorithm_buttons:
                 if btn.rect.collidepoint(pos):
-                    self.ai_algorithm = btn.algorithm
+                    self.ai_algorithm_black = btn.algorithm
+                    return True
+
+            for btn in self.white_algorithm_buttons:
+                if btn.rect.collidepoint(pos):
+                    self.ai_algorithm_white = btn.algorithm
                     return True
             
             for btn in self.black_personality_buttons:
@@ -674,7 +707,8 @@ class GoGame:
                     
                     elif event.type == pygame.MOUSEMOTION:
                         # Update button hover states
-                        for btn in (self.mode_buttons + self.algorithm_buttons + 
+                        for btn in (self.mode_buttons + self.black_algorithm_buttons +
+                                   self.white_algorithm_buttons +
                                    self.black_personality_buttons + 
                                    self.white_personality_buttons + [self.apply_button]):
                             btn.handle_event(event)
@@ -689,7 +723,8 @@ class GoGame:
                             self.last_ai_move_time = current_time
                         elif event.key == pygame.K_r:
                             self.mode = GameMode.HUMAN_VS_HUMAN
-                            self.ai_algorithm = AIAlgorithm.MINIMAX
+                            self.ai_algorithm_black = AIAlgorithm.MINIMAX
+                            self.ai_algorithm_white = AIAlgorithm.MINIMAX
                             self.ai_personality_black = AIPersonality.ALBI
                             self.ai_personality_white = AIPersonality.ANKON
                             self.apply_settings()
