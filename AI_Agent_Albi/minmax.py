@@ -1,6 +1,8 @@
 """
 Minimax AI Agent - Albi
 A Go AI using Minimax algorithm with alpha-beta pruning.
+Built by Albi
+
 """
 
 import random
