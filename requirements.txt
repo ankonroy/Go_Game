@@ -9,6 +9,7 @@ scipy>=1.10.0  # For advanced calculations
 
 # For saving/loading games (optional)
 pickle-mixin>=1.0.2
+tensorflow
 
 # For better random number generation (optional)
 
