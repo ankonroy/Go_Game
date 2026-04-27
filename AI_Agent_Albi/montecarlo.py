@@ -1,6 +1,8 @@
 """
 Monte Carlo Tree Search AI Agent - Albi
 A Go AI using Monte Carlo Tree Search algorithm with safety limits.
+Build by Albi
+
 """
 
 import math
