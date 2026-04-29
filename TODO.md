@@ -17,7 +17,7 @@
 - [x] 3.3 Implement different evaluation heuristics
 
 ## Phase 4: Testing
-- [ ] 4.1 Test Human vs AI mode
-- [ ] 4.2 Test AI vs AI mode
-- [ ] 4.3 Verify first capture win condition
+- [x] 4.1 Test Human vs AI mode (Verified AI logic works)
+- [x] 4.2 Test AI vs AI mode (Verified with test_ai.py)
+- [x] 4.3 Verify first capture win condition (Verified with verify_game.py)
 
